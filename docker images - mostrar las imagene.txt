@@ -1,0 +1,57 @@
+docker images -> mostrar las imagenes
+docker pull nombreimagen -> por defecto descraga la ultima imagen
+
+Tabla images
+repository -> nombre de la imagen
+Tag -> etiquetas lates
+image id -> identificado unico
+create -> la imagen hace cuanto fue creada
+size -> tamaño de la imagen
+
+docker pull node:18 -> los dos puntos genera el numero de version
+docker image rm nombreimagen a eliminar
+
+CREAR UN CONTENEDOR
+docker create nombreimagen -> el nombre de la imagen es la base para crear el container
+se guarda el id del contenedor:83fa7799b0619fa711212999944a42c64d38b5721bfbf07db854de03027ec0a7
+docker start idDelcntenedor -> comenzar a correr el contenedor
+docker ps -> revisar cuales contenedores estan corriendo
+docker stop id-container id -> parar un contenedor
+docker ps -a -> ver todos los contenedores asi no esten corriendo
+docker rm nombredelcontenedorAeliminar -> elimina el contenedor asi este detenido
+docker create --name nombrecontenedor imagenenbase -> crear un contenedor con nombre personalizado
+docker create -p(puertodenuestramaquina):(puertodelcontenedor) -> crear un mapping de puertos
+se puede mapear los puertos cuando se tienen mas de 2 contenedores para la misma imagen
+docker logs monguito -> ver los logs del contenedor
+docker logs --follow monguitos -> muestra de forma constante los logs
+docker run nombreimagen -> revisa si se encuentra la imagen - la descarga - crea un contenedor - inicia el contenedor
+docker run --name monguito -p27017:27017 -d mongo -> hace todas las configuraciones necesarias para el contenedor
+
+CONFIGURAR IMAGEN DE MONGO
+docker create -p27017:27017 --name monguito -e MONGO_INITDB_ROOT_USERNAME: root -e MONGO_INITDB_ROOT_PASSWORD: example baseimagen(mongo) -> se agregan las variables de entorno antes de señalar que son variables de entorno se escribe -e
+
+AGREGAR APLICACION A UN CONTENEDOR
+se crea un archivo llamado Dockerfile -> en ese archivo se hacen las configuraciones
+FROM openjdk:17 -> las imagenes que se crean siembre van en base alguna otra -> en este caso señalamos que se va a basar en el jdk de cualquier version
+RUN mkdir -p /home/app -> indica donde se va almacenar el contenedor
+
+para hacer build del proyecto en java s eutiliza mvn clean package
+
+DOCKER COMPOSE
+sirve para crear configuraciones automaticas para crear el contenedor de la aplicacion.
+se deben configurar unas cosas:
+version: "3.9"
+services:
+  api_reactiva:
+    build: .
+    ports:
+      - "8080:8080"
+    links:
+      - api_reactiva
+    enviroment:
+      - NOMBRE_VARIABLE_ENTORNO=valor
+      - NOMBRE_VARIABLE_ENTORNO=valor
+docker compose up -> levanta el contenedor segun la configuracion de compose
+docker compose dpwn -> elimina todos los contenedores y dependencias que se necesitan para crear la imagen
+
+
